@@ -1,7 +1,7 @@
 # makefile_fastapi.mk
 # FastAPI commands
 
-.PHONY: shell logs-backend logs-worker test
+.PHONY: shell logs-backend logs-worker test test-mickey
 
 shell:
 	$(DC_BIN) exec backend bash
@@ -29,3 +29,6 @@ test:
 	curl -sf http://localhost:8000/documents/ | python3 -m json.tool && echo "PASS: list" || (echo "FAIL: list" && exit 1)
 	@echo ""
 	@echo "All tests passed!"
+
+test-mickey:
+	cd tests/mickey_tests && make -f pymickey.mk test

@@ -1,0 +1,64 @@
+config:
+  env_file: "env.mickey.yaml"
+  default_headers:
+    Content-Type: "application/json"
+
+tests:
+  - name: "Document upload"
+    steps:
+      - name: "POST /documents/upload (HTML file)"
+        request:
+          method: POST
+          url: "{{ base_url }}/documents/upload"
+          headers:
+            Content-Type: null
+          files:
+            file: "test_fixture.html"
+        expect:
+          status: 201
+          json:
+            has_keys: ["id", "filename", "status", "created_at", "updated_at"]
+            field_equals:
+              filename: "test_fixture.html"
+              status: "pending"
+        extract:
+          document_id: "json.id"
+        echo: true
+
+  - name: "Get document by ID"
+    demand: ["document_id"]
+    steps:
+      - name: "GET /documents/{id}"
+        request:
+          method: GET
+          url: "{{ base_url }}/documents/{{ document_id }}"
+        expect:
+          status: 200
+          json:
+            has_keys: ["id", "filename", "status"]
+            field_equals:
+              id: "{{ document_id }}"
+              filename: "test_fixture.html"
+        echo: true
+
+  - name: "List documents"
+    steps:
+      - name: "GET /documents/"
+        request:
+          method: GET
+          url: "{{ base_url }}/documents/"
+        expect:
+          status: 200
+          json:
+            list_len_gte:
+              "": 1
+        echo: true
+
+  - name: "Get non-existent document"
+    steps:
+      - name: "GET /documents/{random_uuid}"
+        request:
+          method: GET
+          url: "{{ base_url }}/documents/00000000-0000-0000-0000-000000000000"
+        expect:
+          status: 404

@@ -1,0 +1,24 @@
+config:
+  env_file: "env.mickey.yaml"
+  default_headers:
+    Content-Type: "application/json"
+
+tests:
+  - name: "Health check"
+    steps:
+      - name: "GET /health"
+        request:
+          method: GET
+          url: "{{ base_url }}/health"
+        expect:
+          status: 200
+          json:
+            has_keys: ["status", "postgres", "redis", "rabbitmq", "minio", "gotenberg"]
+            field_equals:
+              status: "ok"
+              postgres: "ok"
+              redis: "ok"
+              rabbitmq: "ok"
+              minio: "ok"
+              gotenberg: "ok"
+        echo: true
