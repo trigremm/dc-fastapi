@@ -1,0 +1,66 @@
+# dc-fastapi
+
+Document Processing API — FastAPI sample integrating PostgreSQL, Redis, RabbitMQ, MinIO, and Gotenberg.
+
+## Architecture
+
+```
+Upload file → MinIO (store original)
+           → PostgreSQL (save metadata)
+           → RabbitMQ (queue conversion task)
+                ↓
+           Worker picks up task
+           → Gotenberg (convert to PDF)
+           → MinIO (store converted PDF)
+           → PostgreSQL (update status)
+           → Redis (invalidate cache)
+```
+
+**Services:**
+- **FastAPI backend** — REST API on port 8000
+- **Worker** — RabbitMQ consumer for document conversion
+- **PostgreSQL** — document metadata
+- **Redis** — response caching
+- **RabbitMQ** — task queue (management UI on port 15672)
+- **MinIO** — file storage (console on port 9001)
+- **Gotenberg** — document to PDF conversion
+
+## Quick start
+
+```bash
+cp .env.sample .env
+vim .env
+make up
+```
+
+## Commands
+
+### Lifecycle
+
+```
+make d          # deploy (git pull + recreate)
+make r          # recreate (build + stop + up)
+make up         # start
+make stop       # stop
+make down       # stop and remove
+make ps         # status
+make l          # follow logs
+```
+
+### App
+
+```
+make shell          # bash shell in backend container
+make logs-backend   # follow backend logs
+make logs-worker    # follow worker logs
+make test           # run smoke tests (health, upload, list)
+```
+
+## API
+
+- `POST /documents/upload` — upload a file for conversion
+- `GET /documents/` — list documents
+- `GET /documents/{id}` — get document status (Redis-cached)
+- `GET /documents/{id}/download` — download converted PDF
+- `GET /health` — check all service connections
+- `GET /docs` — Swagger UI
