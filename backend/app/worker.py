@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.dependencies import async_session, redis_client
 from app.models import Document
-from app.services import gotenberg_service, minio_service
+from app.clients import gotenberg_service, minio_service
 
 QUEUE_NAME = "document_conversion"
 

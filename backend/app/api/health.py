@@ -3,7 +3,7 @@ from sqlalchemy import text
 
 from app.dependencies import async_session, redis_client
 from app.schemas import HealthResponse
-from app.services import gotenberg_service, minio_service, rabbitmq_service
+from app.clients import gotenberg_service, minio_service, rabbitmq_service
 
 router = APIRouter(tags=["health"])
 

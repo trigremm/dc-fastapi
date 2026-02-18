@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies import get_db, redis_client
 from app.models import Document
 from app.schemas import DocumentResponse
-from app.services import minio_service, rabbitmq_service
+from app.clients import minio_service, rabbitmq_service
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
