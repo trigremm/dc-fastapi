@@ -5,7 +5,7 @@ from sqlalchemy import text
 
 from app.dependencies import async_session, engine, redis_client
 from app.models import Base
-from app.routers import documents, health
+from app.api import documents, health
 
 
 @asynccontextmanager
