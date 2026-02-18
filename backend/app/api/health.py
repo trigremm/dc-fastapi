@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 from sqlalchemy import text
 
-from app.dependencies import async_session, redis_client
-from app.schemas import HealthResponse
-from app.clients import gotenberg_service, minio_service, rabbitmq_service
+from app.clients import gotenberg, minio, rabbitmq
+from app.database.redis import redis_client
+from app.database.sessions import async_session
+from app.schemas.health import HealthResponse
 
 router = APIRouter(tags=["health"])
 
@@ -29,21 +30,21 @@ async def health_check():
 
     # RabbitMQ
     try:
-        await rabbitmq_service.check_connection()
+        await rabbitmq.check_connection()
         checks["rabbitmq"] = "ok"
     except Exception as e:
         checks["rabbitmq"] = str(e)
 
     # MinIO
     try:
-        minio_service.check_connection()
+        minio.check_connection()
         checks["minio"] = "ok"
     except Exception as e:
         checks["minio"] = str(e)
 
     # Gotenberg
     try:
-        await gotenberg_service.check_connection()
+        await gotenberg.check_connection()
         checks["gotenberg"] = "ok"
     except Exception as e:
         checks["gotenberg"] = str(e)

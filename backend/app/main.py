@@ -3,7 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlalchemy import text
 
-from app.dependencies import async_session, engine, redis_client
+from app.database.engines import engine
+from app.database.redis import redis_client
+from app.database.sessions import async_session
 from app.models import Base
 from app.api import documents, health
 

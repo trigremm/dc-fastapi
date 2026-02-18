@@ -3,12 +3,12 @@ import json
 
 import aio_pika
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import settings
-from app.dependencies import async_session, redis_client
+from app.clients import gotenberg, minio
+from app.core.config import settings
+from app.database.redis import redis_client
+from app.database.sessions import async_session
 from app.models import Document
-from app.clients import gotenberg_service, minio_service
 
 QUEUE_NAME = "document_conversion"
 
@@ -29,14 +29,14 @@ async def process_document(document_id: str) -> None:
 
         try:
             # Download original from MinIO
-            original_data = minio_service.download_file(document.original_key)
+            original_data = minio.download_file(document.original_key)
 
             # Convert via Gotenberg
-            pdf_data = await gotenberg_service.convert_to_pdf(document.filename, original_data)
+            pdf_data = await gotenberg.convert_to_pdf(document.filename, original_data)
 
             # Upload converted PDF to MinIO
             converted_key = f"converted/{document_id}/{document.filename.rsplit('.', 1)[0]}.pdf"
-            minio_service.upload_file(converted_key, pdf_data, "application/pdf")
+            minio.upload_file(converted_key, pdf_data, "application/pdf")
 
             # Update status
             document.converted_key = converted_key

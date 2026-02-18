@@ -13,12 +13,3 @@ class DocumentResponse(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
-
-
-class HealthResponse(BaseModel):
-    status: str
-    postgres: str
-    redis: str
-    rabbitmq: str
-    minio: str
-    gotenberg: str

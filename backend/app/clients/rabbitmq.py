@@ -2,7 +2,7 @@ import json
 
 import aio_pika
 
-from app.config import settings
+from app.core.config import settings
 
 QUEUE_NAME = "document_conversion"
 

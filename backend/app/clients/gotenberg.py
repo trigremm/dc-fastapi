@@ -1,6 +1,6 @@
 import httpx
 
-from app.config import settings
+from app.core.config import settings
 
 
 async def convert_to_pdf(filename: str, file_data: bytes) -> bytes:

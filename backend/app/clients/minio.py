@@ -3,7 +3,7 @@ import io
 import boto3
 from botocore.config import Config
 
-from app.config import settings
+from app.core.config import settings
 
 s3_client = boto3.client(
     "s3",
